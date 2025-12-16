@@ -7,6 +7,11 @@ A real-time cryptocurrency pairs trading dashboard with advanced statistical ana
 ![React](https://img.shields.io/badge/react-18.0+-61dafb.svg)
 ![FastAPI](https://img.shields.io/badge/FastAPI-0.109+-009688.svg)
 
+markdown## 📸 Architecture Diagram
+
+### Dashboard Overview
+![Architecture Diagram](https://github.com/SarthakRathi/quant-dashboard/blob/6284603e1bc49ceefb0e02a580709940ce8bda4e/architecture%20diagram.png)
+
 ## ✨ Features
 
 ### 📈 Real-Time Market Data

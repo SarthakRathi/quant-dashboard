@@ -5,9 +5,12 @@ import time
 import pandas as pd
 import requests
 import numpy as np 
+import io
+import webbrowser
 from datetime import datetime
 from fastapi import FastAPI, WebSocket, Query, WebSocketDisconnect
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import StreamingResponse
 from websockets import connect
 
 app = FastAPI()
@@ -84,12 +87,11 @@ def fetch_snapshot_sync(symbols):
     
     thread_conn.close()
 
-def get_history_batch(active_symbols, prim, sec, window_size):
+def get_history_batch(active_symbols, prim, sec, window_size, full_history=False):
     """Reads DB and returns chart-ready data with Advanced Analytics"""
     
     # GUARD: Identity Case (Prim == Sec)
     if prim == sec:
-        placeholders = '?'
         query = f"SELECT timestamp, symbol, price FROM prices WHERE symbol = ? ORDER BY rowid ASC"
         df = pd.read_sql_query(query, conn, params=(prim,))
         if df.empty: return []
@@ -100,14 +102,15 @@ def get_history_batch(active_symbols, prim, sec, window_size):
         df_pivot['beta'] = 1.0
         df_pivot['half_life'] = 0
         df_pivot['latency'] = "0ms"
-        # Mirror columns for frontend chart
         df_pivot[sec] = df_pivot[prim]
-        return df_pivot.tail(60).to_dict(orient='records')
+        
+        # Return full dataframe if requested (for CSV), else last 60 points (for Charts)
+        return df_pivot.to_dict(orient='records') if full_history else df_pivot.tail(60).to_dict(orient='records')
 
     if not active_symbols: return []
     
     placeholders = ','.join(['?'] * len(active_symbols))
-    limit = window_size * 4 
+    # If exporting CSV (full_history), grab everything. If chart, grab enough for window.
     query = f"SELECT timestamp, symbol, price FROM prices WHERE symbol IN ({placeholders}) ORDER BY rowid ASC"
     
     try:
@@ -140,10 +143,32 @@ def get_history_batch(active_symbols, prim, sec, window_size):
             df_pivot['beta'] = 0
             df_pivot['half_life'] = 0
 
-        return df_pivot.tail(60).to_dict(orient='records')
+        # Return full dataframe if requested (for CSV), else last 60 points (for Charts)
+        return df_pivot.to_dict(orient='records') if full_history else df_pivot.tail(60).to_dict(orient='records')
+        
     except Exception as e:
         print(f"Batch Error: {e}")
         return []
+
+# --- EXPORT ENDPOINT ---
+@app.get("/export_csv")
+def export_csv(primary: str, secondary: str, window: int):
+    # Fetch FULL history (True flag) for the CSV, not just the chart tail
+    data = get_history_batch([primary, secondary], primary, secondary, window, full_history=True)
+    
+    if not data:
+        return {"error": "No data available"}
+    
+    df = pd.DataFrame(data)
+    
+    # Create in-memory buffer
+    stream = io.StringIO()
+    df.to_csv(stream, index=False)
+    
+    # Return as download stream
+    response = StreamingResponse(iter([stream.getvalue()]), media_type="text/csv")
+    response.headers["Content-Disposition"] = f"attachment; filename=strategy_{primary}_{secondary}.csv"
+    return response
 
 # --- LIVE ANALYTICS ---
 def calculate_analytics(buffer_map, active_symbols, prim, sec, window_size):
@@ -306,5 +331,21 @@ async def websocket_endpoint(
         print(f"WS Error: {e}")
 
 if __name__ == "__main__":
+    from fastapi.staticfiles import StaticFiles
+    import os
+    import threading
+    
+    if os.path.exists("build"):
+        app.mount("/", StaticFiles(directory="build", html=True), name="static")
+
+    def open_browser():
+        time.sleep(1.5)
+        webbrowser.open("http://localhost:5000")
+
+    threading.Thread(target=open_browser, daemon=True).start()
+    
     import uvicorn
+    print("🚀 Starting Quant Live Monitor...")
+    print("📊 Server will open automatically in your browser")
+    print("🌐 Manual access: http://localhost:5000")
     uvicorn.run(app, host="0.0.0.0", port=5000)

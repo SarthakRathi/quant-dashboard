@@ -1,0 +1,98 @@
+================================================================================
+AI USAGE DOCUMENTATION
+================================================================================
+
+Project: Quant Live Monitor
+AI Tool: Claude (Anthropic) - Sonnet 4.5, Gemini
+
+================================================================================
+
+This project was developed with assistance from AI. Below is a transparent 
+breakdown of AI contributions:
+
+--------------------------------------------------------------------------------
+1. LEARNING NEW CONCEPTS
+--------------------------------------------------------------------------------
+• Pairs trading strategy and z-score calculations
+• WebSocket real-time communication patterns
+• Financial analytics (correlation, beta, half-life)
+• React hooks and state management for live data
+
+--------------------------------------------------------------------------------
+2. FEATURE IDEAS & DESIGN
+--------------------------------------------------------------------------------
+• Fullscreen chart mode for detailed analysis
+• Configurable alert threshold system
+• CSV export for backtesting
+• Correlation heatmap visualization
+• Multiple timeframe windows (15min to 5hr)
+• Enhanced dropdown components with better UX
+
+--------------------------------------------------------------------------------
+3. GUI ENHANCEMENT
+--------------------------------------------------------------------------------
+• Dark theme design with professional color palette
+• Component architecture (MetricCard, EnhancedDropdown, ChartWrapper)
+• Responsive grid layouts and visual hierarchy
+• Loading states and smooth transitions
+• Chart styling with reference lines and color coding
+
+--------------------------------------------------------------------------------
+4. ARCHITECTURE DIAGRAMS
+--------------------------------------------------------------------------------
+• System architecture (client, server, database, external services)
+• Data flow pipeline visualization
+• Sequence diagrams for user interactions
+• Component relationship diagrams
+All created using Mermaid syntax for easy documentation integration.
+
+--------------------------------------------------------------------------------
+5. CODE OPTIMIZATION
+--------------------------------------------------------------------------------
+• Database query optimization with proper indexing
+• Efficient pandas operations for analytics
+• React performance improvements (reduced re-renders)
+• Memory management with rolling window limits
+• Asynchronous WebSocket handling
+• Code structure and modular design
+
+--------------------------------------------------------------------------------
+6. DOCUMENTATION
+--------------------------------------------------------------------------------
+• Comprehensive GitHub README with setup instructions
+• API endpoint documentation
+• Analytics formulas and explanations
+• Troubleshooting guide
+• Usage workflows and best practices
+• Deployment instructions
+
+--------------------------------------------------------------------------------
+7. ADDITIONAL CONTRIBUTIONS
+--------------------------------------------------------------------------------
+• Error handling and graceful fallbacks
+• Security considerations (CORS, input validation)
+• Inline code comments and docstrings
+• Debugging assistance and bug fixes
+
+================================================================================
+HUMAN CONTRIBUTIONS
+================================================================================
+
+• Project concept and requirements
+• Final implementation decisions
+• Testing and validation
+• Domain-specific trading knowledge
+• Real-world usage refinements
+
+================================================================================
+TRANSPARENCY NOTE
+================================================================================
+
+AI was used as a learning tool, brainstorming partner, code assistant, and 
+documentation creator. All final decisions, testing, and deployment were 
+performed by the human developer.
+
+This transparent disclosure acknowledges AI's role while recognizing the 
+essential human elements of creativity, decision-making, and expertise.
+
+================================================================================
